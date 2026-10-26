@@ -1529,7 +1529,17 @@
         if (r.height < 1 || r.top >= window.innerHeight || r.left >= p.right || r.right <= p.left) {
             return null;
         }
-        return r.top;
+        // Mapy moves its scale bar + attribution up to sit on the open drawer;
+        // clear those too.
+        let top = r.top;
+        const scale = document.querySelector(".bottom-left-controls");
+        if (scale) {
+            const s = scale.getBoundingClientRect();
+            if (s.height > 0 && s.left < p.right && s.right > p.left) {
+                top = Math.min(top, s.top);
+            }
+        }
+        return top;
     }
 
     function layoutPanel() {
